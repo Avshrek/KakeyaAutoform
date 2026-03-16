@@ -1,0 +1,11 @@
+/.lake
+/build
+
+# Automation build artifacts
+Automation/compiler_output.json
+Automation/last_report.txt
+Automation/last_compiler_output.json
+Automation/last_diagnostic_report.txt
+
+# Backup files
+KakeyaAutoform/Basic_Golden_Ticket.lean
