@@ -131,17 +131,17 @@ def generate_report(diagnostics_json: dict) -> str:
     lines.append("")
 
     if diagnostics_json["build_success"]:
-        lines.append("✅ BUILD SUCCEEDED")
+        lines.append("[PASS] BUILD SUCCEEDED")
         lines.append(f"   Exit code: {diagnostics_json['build_exit_code']}")
         lines.append(f"   Sorry count: {diagnostics_json['sorry_count']}")
         if diagnostics_json["sorry_count"] > 0:
-            lines.append(f"   ⚠  {diagnostics_json['sorry_count']} declaration(s) use 'sorry'")
+            lines.append(f"   [WARN] {diagnostics_json['sorry_count']} declaration(s) use 'sorry'")
         lines.append("")
         lines.append("No errors to diagnose. The code type-checks successfully.")
         lines.append("=" * 72)
         return "\n".join(lines)
 
-    lines.append("❌ BUILD FAILED")
+    lines.append("[FAIL] BUILD FAILED")
     lines.append(f"   Exit code: {diagnostics_json['build_exit_code']}")
     lines.append(f"   Errors: {diagnostics_json['total_errors']}")
     lines.append(f"   Warnings: {diagnostics_json['total_warnings']}")
@@ -149,7 +149,7 @@ def generate_report(diagnostics_json: dict) -> str:
     lines.append("")
 
     for i, err in enumerate(diagnostics_json.get("errors", []), 1):
-        lines.append(f"── Error {i} ──────────────────────────────────────────────")
+        lines.append(f"--- Error {i} ----------------------------------------------")
         lines.append(f"  File:     {err['file']}:{err['line']}:{err['col']}")
         lines.append(f"  Category: {err['category']}")
         lines.append(f"  Message:  {err['message'][:200]}")
@@ -157,21 +157,21 @@ def generate_report(diagnostics_json: dict) -> str:
 
         fix = match_fix(err["category"], err["message"])
         if fix:
-            lines.append(f"  📋 Diagnosis:")
+            lines.append(f"  Diagnosis:")
             lines.append(f"     {fix['diagnosis']}")
             lines.append("")
             if fix["required_imports"]:
-                lines.append(f"  📦 Required Imports:")
+                lines.append(f"  Required Imports:")
                 for imp in fix["required_imports"]:
                     lines.append(f"     {imp}")
                 lines.append("")
             if fix["code_fix"]:
-                lines.append(f"  🔧 Code Fix:")
+                lines.append(f"  Code Fix:")
                 for fline in fix["code_fix"].split("\n"):
                     lines.append(f"     {fline}")
                 lines.append("")
         elif err.get("suggested_fix"):
-            lines.append(f"  🔧 Suggested Fix:")
+            lines.append(f"  Suggested Fix:")
             for fline in err["suggested_fix"].split("\n"):
                 lines.append(f"     {fline}")
             lines.append("")
